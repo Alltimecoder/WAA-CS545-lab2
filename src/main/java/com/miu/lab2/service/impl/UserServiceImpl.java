@@ -27,12 +27,13 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<UserDTO> findAll() {
-    return (List<UserDTO>) listModelMapper.mapList((List<User>) userRepository.findAll(), new UserDTO());
+    var users = (List<User>) userRepository.findAll();
+    return (List<UserDTO>) listModelMapper.mapList(users, new UserDTO());
   }
 
   @Override
   public UserDTO getById(long id) {
-    return modelMapper.map(userRepository.findById(id), UserDTO.class);
+    return modelMapper.map(userRepository.findById(id).get(), UserDTO.class);
   }
 
   @Override

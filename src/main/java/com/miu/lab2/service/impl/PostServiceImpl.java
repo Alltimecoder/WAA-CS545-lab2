@@ -5,8 +5,8 @@ import com.miu.lab2.domain.Post;
 import com.miu.lab2.domain.User;
 import com.miu.lab2.domain.dto.PostDTO;
 import com.miu.lab2.repository.PostRepository;
+import com.miu.lab2.repository.UserRepository;
 import com.miu.lab2.service.PostService;
-import com.miu.lab2.service.UserService;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +17,16 @@ public class PostServiceImpl implements PostService {
 
   private final PostRepository postRepository;
   private final ModelMapper modelMapper;
-  private final UserService userService;
   private final ListModelMapper<Post, PostDTO> listModelMapper;
+  private final UserRepository userRepository;
 
   @Autowired
   public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper,
-      UserService userService,
-      ListModelMapper<Post, PostDTO> listModelMapper) {
+      ListModelMapper<Post, PostDTO> listModelMapper, UserRepository userRepository) {
     this.postRepository = postRepository;
     this.modelMapper = modelMapper;
-    this.userService = userService;
     this.listModelMapper = listModelMapper;
+    this.userRepository = userRepository;
   }
 
   @Override
@@ -38,7 +37,7 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PostDTO getById(long id) {
-    return modelMapper.map(postRepository.findById(id), PostDTO.class);
+    return modelMapper.map(postRepository.findById(id).get(), PostDTO.class);
   }
 
   @Override
@@ -47,8 +46,8 @@ public class PostServiceImpl implements PostService {
     p.setTitle(dto.getTitle());
     p.setAuthor(dto.getAuthor());
     p.setContent(dto.getContent());
-    var user = userService.getById(dto.getId_user());
-    p.setUser(modelMapper.map(user, User.class));
+    var user = userRepository.findById(dto.getId_user()).get();
+    p.setUser(user);
     postRepository.save(p);
   }
 

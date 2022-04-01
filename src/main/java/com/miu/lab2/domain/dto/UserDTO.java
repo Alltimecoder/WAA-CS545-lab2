@@ -1,7 +1,5 @@
 package com.miu.lab2.domain.dto;
 
-import com.miu.lab2.domain.Post;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class UserDTO {
+
+  private long id;
   private String name;
-  private List<Post> posts;
 }

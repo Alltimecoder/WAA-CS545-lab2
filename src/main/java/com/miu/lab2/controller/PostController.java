@@ -1,6 +1,7 @@
 package com.miu.lab2.controller;
 
 import com.miu.lab2.domain.dto.PostDTO;
+import com.miu.lab2.domain.dto.UserDTO;
 import com.miu.lab2.service.PostService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,5 +61,15 @@ public class PostController {
   @GetMapping("/author/{authorName}")
   public ResponseEntity<List<PostDTO>> getPostByAuthors(@PathVariable String authorName) {
     return ResponseEntity.ok(postService.filterByAuthor(authorName));
+  }
+
+  @GetMapping("/title")
+  public ResponseEntity<List<PostDTO>> getPostByTitle(@RequestParam String title) {
+    return ResponseEntity.ok(postService.filterByTitle(title));
+  }
+
+  @GetMapping("/user-by-title")
+  public ResponseEntity<List<UserDTO>> findUserWithPostOfSpecificTitle(@RequestParam String title) {
+    return ResponseEntity.ok(postService.findUserWithPostOfSpecificTitle(title));
   }
 }

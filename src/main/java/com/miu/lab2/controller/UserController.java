@@ -1,5 +1,6 @@
 package com.miu.lab2.controller;
 
+import com.miu.lab2.domain.dto.CommentDTO;
 import com.miu.lab2.domain.dto.UserDTO;
 import com.miu.lab2.service.UserService;
 import java.util.List;
@@ -54,5 +55,11 @@ public class UserController {
   @GetMapping("/filter")
   public ResponseEntity<List<UserDTO>> getUserWithMoreThanOnePosts(@RequestParam int postMoreThan) {
     return ResponseEntity.ok(userService.userWithMoreThanOnePost(postMoreThan));
+  }
+
+  @GetMapping("/{userId}/posts/{postId}/comments/{commentId}")
+  public ResponseEntity<CommentDTO> getCommentBySpecificUserAndPostId(@PathVariable long userId,
+      @PathVariable long postId, @PathVariable long commentId) {
+    return ResponseEntity.ok(userService.getCommentBySpecificUserAndPostId(userId, postId, commentId));
   }
 }

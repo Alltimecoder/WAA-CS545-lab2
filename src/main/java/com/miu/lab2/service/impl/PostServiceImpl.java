@@ -4,10 +4,12 @@ import com.miu.lab2.Util.ListModelMapper;
 import com.miu.lab2.domain.Post;
 import com.miu.lab2.domain.User;
 import com.miu.lab2.domain.dto.PostDTO;
+import com.miu.lab2.domain.dto.UserDTO;
 import com.miu.lab2.repository.PostRepository;
 import com.miu.lab2.repository.UserRepository;
 import com.miu.lab2.service.PostService;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,6 +68,22 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public List<PostDTO> filterByAuthor(String author) {
-    return postRepository.findAllByAuthor(author);
+    var posts = postRepository.findAllByAuthor(author);
+    return (List<PostDTO>) listModelMapper.mapList(posts, new PostDTO());
+
+  }
+
+  @Override
+  public List<PostDTO> filterByTitle(String title) {
+    List<Post> posts = postRepository.findAllByTitle(title);
+    return (List<PostDTO>) listModelMapper.mapList(posts, new PostDTO());
+  }
+
+  @Override
+  public List<UserDTO> findUserWithPostOfSpecificTitle(String title) {
+    List<User> users = postRepository.findUserWithPostOfSpecificTitle(title);
+    return users.stream()
+        .map(user -> modelMapper.map(user, UserDTO.class))
+        .collect(Collectors.toList());
   }
 }

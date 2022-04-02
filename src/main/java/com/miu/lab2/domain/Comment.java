@@ -1,31 +1,31 @@
 package com.miu.lab2.domain;
 
-import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "users")
+@NoArgsConstructor
 @Entity
 @Data
-public class User {
+public class Comment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
-  private String email;
-  private String firstName;
-  private String lastName;
-  private String password;
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-  private List<Post> posts;
+  private String name;
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Fetch(value = FetchMode.SELECT)
+  @JoinColumn(name = "id_post")
+  private Post post;
 }

@@ -1,9 +1,11 @@
 package com.miu.lab2.controller;
 
+import com.miu.lab2.aspect.annotation.ExecutionTime;
 import com.miu.lab2.domain.dto.CommentDTO;
 import com.miu.lab2.domain.dto.UserDTO;
 import com.miu.lab2.service.UserService;
 import java.util.List;
+import javax.naming.CannotProceedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,10 +42,16 @@ public class UserController {
     userService.save(p);
   }
 
+  @ExecutionTime
   @GetMapping("/{id}")
   public ResponseEntity<UserDTO> getById(@PathVariable int id) {
     var userDTO = userService.getById(id);
     return ResponseEntity.ok(userDTO);
+  }
+
+  @GetMapping("/exception-test")
+  public void exceptionTest() throws CannotProceedException {
+    throw new CannotProceedException("cannot proceed");
   }
 
   @ResponseStatus(HttpStatus.NO_CONTENT)

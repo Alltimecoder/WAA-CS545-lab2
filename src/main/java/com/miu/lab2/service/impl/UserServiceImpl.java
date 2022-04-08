@@ -2,35 +2,37 @@ package com.miu.lab2.service.impl;
 
 import com.miu.lab2.Util.ListModelMapper;
 import com.miu.lab2.domain.Comment;
+import com.miu.lab2.domain.Role;
 import com.miu.lab2.domain.User;
 import com.miu.lab2.domain.dto.CommentDTO;
 import com.miu.lab2.domain.dto.UserDTO;
 import com.miu.lab2.repository.CommentRepository;
+import com.miu.lab2.repository.RoleRepository;
 import com.miu.lab2.repository.UserRepository;
 import com.miu.lab2.service.UserService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService {
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService, UserDetailsService {
 
   private final UserRepository userRepository;
+  private final RoleRepository roleRepository;
   private final ModelMapper modelMapper;
   private final ListModelMapper<User, UserDTO> listModelMapper;
   private final CommentRepository commentRepository;
-
-  @Autowired
-  public UserServiceImpl(UserRepository userRepository,
-      ModelMapper modelMapper, ListModelMapper<User, UserDTO> listModelMapper,
-      CommentRepository commentRepository) {
-    this.userRepository = userRepository;
-    this.modelMapper = modelMapper;
-    this.listModelMapper = listModelMapper;
-    this.commentRepository = commentRepository;
-  }
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public List<UserDTO> findAll() {
@@ -45,7 +47,11 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void save(UserDTO userDTO) {
-    userRepository.save(modelMapper.map(userDTO, User.class));
+    var user = modelMapper.map(userDTO, User.class);
+    List<Role> roleList = (List<Role>) roleRepository.findAll();
+    user.setRoles(roleList);
+    user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+    userRepository.save(user);
   }
 
   @Override
@@ -62,5 +68,11 @@ public class UserServiceImpl implements UserService {
   public CommentDTO getCommentBySpecificUserAndPostId(long userId, long postId, long commentId) {
     Optional<Comment> comment = commentRepository.getCommentBySpecificUserAndPostId(userId, postId, commentId);
     return comment.map(value -> modelMapper.map(value, CommentDTO.class)).orElse(null);
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    var user = userRepository.findByEmail(username);
+    return new AppUserDetails(user);
   }
 }

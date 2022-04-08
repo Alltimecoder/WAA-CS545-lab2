@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoggerAspect {
   
-  private static User Mocked_User = new User(112, "john@miu.edu", "john", "doe", "$2a$12$IKEQb00u5QpZMx4v5zMweu.3wrq0pS7XLCHO4yHZ.BW/yvWu1feo2", null);
+  private static User Mocked_User = new User(112, "john@miu.edu", "john", "doe", "$2a$12$IKEQb00u5QpZMx4v5zMweu.3wrq0pS7XLCHO4yHZ.BW/yvWu1feo2", null, null);
   private final LoggerService loggerService;
   private final ExceptionService exceptionService;
 

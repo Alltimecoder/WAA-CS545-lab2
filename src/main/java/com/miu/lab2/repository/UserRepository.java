@@ -11,4 +11,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
   @Query("select u from User u where u.posts.size > :postMoreThan")
   List<User> userWithMoreThanOnePost(int postMoreThan);
+
+  User findByEmail(String username);
 }
